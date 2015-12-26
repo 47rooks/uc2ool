@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<project name="Uc2ool" default="create-jar">
+  <target name="create-jar" description="Create uc2ool.jar file">
+        <jar jarfile="uc2ool.jar"
+        	basedir="bin/"
+            includes="**/*"/>
+  </target>
+</project>
