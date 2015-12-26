@@ -10,5 +10,6 @@ There are four subprojects in this repository:
   Uc2oolEclipse : an Eclipse plugin offering the same function.  
   Uc2oolAndroid : an Android version of the application.
   
-  Uc2oolJavafx is coming very soon - a small refactoring only required.  
+  Note that Uc2oolJavafx, Uc2oolEclipse and Uc2oolAndroid require the uc2ool.jar from Uc2oolCore.
+  
   Uc2oolEclipse and Uc2oolAndroid are not yet started.
