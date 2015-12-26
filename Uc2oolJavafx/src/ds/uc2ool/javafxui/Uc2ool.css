@@ -1,0 +1,7 @@
+/**
+ * Copyright Daniel Semler 2015
+ */
+.text-area *.text {
+    -fx-text-alignment: center;
+    
+}
