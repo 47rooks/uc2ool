@@ -20,6 +20,7 @@ public class Messages extends ListResourceBundle {
     static final Object[][] m_contents = {
             { "INV_DEC_CP", "Invalid decimal code point %1$s." },
             { "INV_HEX_CP", "Invalid hexadecimal code point %1$s." },
+            { "INV_UTF8_ENCODING", "Invalid UTF-8 input sequence %1$s."},
             
             // Fatal errors requiring development, or at least code,
             // investigation

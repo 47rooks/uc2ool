@@ -1,6 +1,7 @@
 package ds.uc2ool.core.model;
 
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import ds.uc2ool.core.exceptions.UncheckedModelException;
 
@@ -22,6 +23,15 @@ public class Uc2oolModel {
     }
     private final int MAX_CODEPOINT = 1114112; // As defined in Unicode 8.
     
+    // First byte prefix bits
+    private final int ONE_BYTE_UTF8_PFX     = 0b00000000;
+    private final int TWO_BYTE_UTF8_PFX     = 0b11000000;
+    private final int THREE_BYTE_UTF8_PFX   = 0b11100000;
+    private final int FOUR_BYTE_UTF8_PFX    = 0b11110000;
+    // Prefix for bytes 2 through 4
+    private final int SUBSEQ_BYTE_UTF8_PFX  = 0b10000000;
+    private final int SUBSEQ_BYTE_UTF8_MASK = 0b00111111;    
+
 	private String m_input;
 	private InputType m_type;
 	private int m_codepoint;
@@ -47,6 +57,7 @@ public class Uc2oolModel {
 		    case CHARACTER:
 		        break;
 		    case UTF8:
+		        m_codepoint = convertUTF8ToCodepoint(i);
 		        break;
 		    case DECCODEPOINT:
 		        validateDecimalCodePoint(i);
@@ -57,6 +68,68 @@ public class Uc2oolModel {
 		        m_codepoint = parseHexInput(i);
 		        break;
 		}
+	}
+	
+	private int convertUTF8ToCodepoint(String i) {
+	    i = i.trim();
+	    
+	    // Check that we have 1, 2, 3 or 4 hex pairs
+	    final String hp = "(?:0[xX]){0,1}";
+	    final String h1 = "[0-9a-fA-F]";
+	    final String hex1byte = hp + h1 + "{2}";
+        final String hex2byte = hex1byte + "\\s+" + hex1byte;
+        final String hex3byte = hex2byte + "\\s+" + hex1byte;
+        final String hex4byte = hex3byte + "\\s+" + hex1byte;
+        Pattern pHex1byte = Pattern.compile(hex1byte);
+        Pattern pHex2byte = Pattern.compile(hex2byte);
+        Pattern pHex3byte = Pattern.compile(hex3byte);
+        Pattern pHex4byte = Pattern.compile(hex4byte);
+        
+        // Check for the correct first byte encoding for the number of hex pairs
+        String inp = 
+                i.replaceAll("\\s", "").replace("0x",  "").replace("0X",  "");
+        int len = inp.length();
+        String firstByte = inp.substring(0,2);
+        int hInt = Integer.valueOf(firstByte, 16);
+        
+        // Run the checks and convert it to an integer codepoint if ok
+	    if ((pHex1byte.matcher(i).matches() ||
+	         pHex2byte.matcher(i).matches() ||
+	         pHex3byte.matcher(i).matches() ||
+	         pHex4byte.matcher(i).matches()) &&
+	        ((((hInt & ONE_BYTE_UTF8_PFX) == ONE_BYTE_UTF8_PFX) && len == 2) ||
+	         (((hInt & TWO_BYTE_UTF8_PFX) == TWO_BYTE_UTF8_PFX) && len == 4) ||
+	         (((hInt & THREE_BYTE_UTF8_PFX) == THREE_BYTE_UTF8_PFX) && len == 6) ||
+             (((hInt & FOUR_BYTE_UTF8_PFX) == FOUR_BYTE_UTF8_PFX) && len == 8)))
+	    {
+	        int cp = 0;
+	        
+	        // Handle the first hex byte
+	        switch (len) {
+	        case 2:
+	            cp = hInt &  ~ONE_BYTE_UTF8_PFX;
+	            break;
+	        case 4:
+                cp = hInt & ~TWO_BYTE_UTF8_PFX;
+	            break;
+	        case 6:
+                cp = hInt & ~THREE_BYTE_UTF8_PFX;
+	            break;
+	        case 8:
+                cp = hInt & ~FOUR_BYTE_UTF8_PFX;
+	            break;
+	        }
+
+	        for (int j = 2; j < len; j = j + 2) {
+	            String h = inp.substring(j, j + 2);
+	            int hi = Integer.valueOf(h, 16);
+	            cp = cp << 6;
+	            cp |= (hi & SUBSEQ_BYTE_UTF8_MASK);
+	        }
+	        return cp;
+	    }
+	        
+	    throw new UncheckedModelException("INV_UTF8_ENCODING", i);
 	}
 	
 	// Validate the input codepoint value for a decimal input
@@ -122,17 +195,6 @@ public class Uc2oolModel {
      * Return a String containing the UTF-8 encoding for the codepoint.
      */
 	public String getUTF8Encoding() {
-	    // First byte prefix bits
-	    final int ONE_BYTE_UTF8_PFX     = 0b00000000;
-	    final int TWO_BYTE_UTF8_PFX     = 0b11000000;
-	    final int THREE_BYTE_UTF8_PFX   = 0b11100000;
-	    final int FOUR_BYTE_UTF8_PFX    = 0b11110000;
-	    final int FIVE_BYTE_UTF8_PFX    = 0b11111000;
-	    final int SIX_BYTE_UTF8_PFX     = 0b11111100;
-	    // Prefix for bytes 2 through 6
-	    final int SUBSEQ_BYTE_UTF8_PFX  = 0b10000000;
-	    final int SUBSEQ_BYTE_UTF8_MASK = 0b00111111;
-	    
 	    // Determine the correct number of bytes to carry the encoded form
 	    int numBytes = 1;
 	    int firstBytePrefix = ONE_BYTE_UTF8_PFX;
@@ -148,12 +210,6 @@ public class Uc2oolModel {
         } else if (m_codepoint >= 0x10000 && m_codepoint <= 0x1fffff) {
             numBytes = 4;
             firstBytePrefix = FOUR_BYTE_UTF8_PFX;
-        } else if (m_codepoint >= 0x200000 && m_codepoint <= 0x3ffffff) {
-            numBytes = 5;
-            firstBytePrefix = FIVE_BYTE_UTF8_PFX;
-        } else if (m_codepoint >= 0x4000000 && m_codepoint <= 0x7fffffff) {
-            numBytes = 6;
-            firstBytePrefix = SIX_BYTE_UTF8_PFX;
         } else {
             throw new IllegalArgumentException(
                     "Invalid code point : " + m_codepoint);
