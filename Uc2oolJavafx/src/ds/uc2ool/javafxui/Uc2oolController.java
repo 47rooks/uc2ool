@@ -8,6 +8,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.plaf.FontUIResource;
+
 import ds.debug.DebugLogger;
 import ds.uc2ool.core.exceptions.Uc2oolFatalException;
 import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
@@ -257,13 +259,26 @@ public class Uc2oolController {
             	m_utf8Encoding.setText(m_model.getUTF8Encoding());
             	m_decimalCodePoint.setText(m_model.getDecimalCodePoint());
             	m_glyph.setFont(new Font(m_fontValue, m_fontSizeValue));
-            	m_glyph.setText(m_model.getUnicodeCharacter());    		
+            	m_glyph.setText(getUnicodeCharacter());    		
             }
         } catch (Exception cre) {
             handleException(cre);
         }
     }
 
+    private String getUnicodeCharacter() {
+        // FIXME This awtFont support is a precursor to full missing glyph
+        // support which is to come.
+        java.awt.Font awtFont = 
+                new java.awt.Font(m_fontValue,
+                                  java.awt.Font.PLAIN,
+                                  new Double(m_fontSizeValue).intValue());
+        if (!awtFont.canDisplay(m_model.getCodepoint())) {
+            return new String("");
+        }
+        return m_model.getUnicodeCharacter();
+    }
+    
     /* Handle exception popping up an error dialog to the user and logging
      * the error to the diagnostic log if required.
      * 

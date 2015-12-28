@@ -59,7 +59,7 @@
                                           <ToggleGroup fx:id="m_inputType" />
                                        </toggleGroup>
                                     </RadioButton>
-                                    <RadioButton fx:id="m_UTF8EncodingRB" disable="true" mnemonicParsing="false" text="UTF-8 Encoding" toggleGroup="$m_inputType" GridPane.rowIndex="1" />
+                                    <RadioButton fx:id="m_UTF8EncodingRB" mnemonicParsing="false" text="UTF-8 Encoding" toggleGroup="$m_inputType" GridPane.rowIndex="1" />
                                     <RadioButton fx:id="m_decimalCodePointRB" mnemonicParsing="false" text="Decimal code point" toggleGroup="$m_inputType" GridPane.rowIndex="2" />
                                     <RadioButton fx:id="m_hexCodePointRB" mnemonicParsing="false" selected="true" text="Hex code point" toggleGroup="$m_inputType" GridPane.rowIndex="3" />
                                     <Button fx:id="m_process" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#processFired" text="Process" GridPane.columnIndex="1" GridPane.rowIndex="3" />

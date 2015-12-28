@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry kind="lib" path="/Uc2oolCore/uc2ool.jar"/>
+	<classpathentry kind="lib" path="/Uc2oolCore/uc2ool.jar" sourcepath="/Uc2oolCore/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
