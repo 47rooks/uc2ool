@@ -526,6 +526,20 @@ public class Uc2oolUnitTest {
         }
     }
 
+    @Test
+    public void testUTF8Invalid5Byte() {
+        try {
+            // Beyond the range.
+            testUTF8Input("F4 9F BF BF 90", 1179647);
+            fail("Expected exception not thrown");
+        } catch (UncheckedModelException uce) {
+            // Expected
+            assertTrue("Got : " + uce.getLocalizedMessage(),
+                       uce.getLocalizedMessage().equals(
+                           "Invalid UTF-8 input sequence F4 9F BF BF 90."));           
+        }
+    }
+
     /**
      * Core UTF-8 input encoding test routine.
      * 
