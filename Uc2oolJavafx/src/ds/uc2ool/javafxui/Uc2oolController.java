@@ -2,13 +2,13 @@ package ds.uc2ool.javafxui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.swing.plaf.FontUIResource;
 
 import ds.debug.DebugLogger;
 import ds.uc2ool.core.exceptions.Uc2oolFatalException;
@@ -114,7 +114,77 @@ public class Uc2oolController {
     private double m_fontSizeValue = Double.valueOf(DEFAULT_FONT_SIZE);
     
     @FXML // fx:id="m_statusBar"
-    private Label m_statuBar;
+    private Label m_statusBar;
+    /**
+     * Instances of the Status class provide support for storing one or more
+     * status messages and their corresponding arguments. They are stored in
+     * the order they are added. These messages are assumed to use messages
+     * Ids which are known to the client. The client is expected to handle
+     * looked of the message in an appropriate bundle and to apply the
+     * arguments to it. Status objects merely provide storage. 
+     * 
+     * There is no multi-threading support.
+     * 
+     * @author	Daniel Semler
+     * @version	%I%, %G%
+     * @since	1.0
+     */
+    private class Status {
+        List<String> m_msgIds;
+        List<List<Object>> m_args;
+        
+        Status() {
+            m_msgIds = new ArrayList<String>();
+            m_args = new ArrayList<List<Object>>();
+        };
+        
+        /**
+         * Add a status message and arguments to this Status
+         * 
+         * @param msgId the message Id for this status message
+         * @param args a list of arguments required by the message
+         */
+        void add(String msgId, Object... args) {
+            m_msgIds.add(msgId);
+            m_args.add(Arrays.asList(args));
+        }
+        
+        /**
+         * Clear down the status object
+         */
+        void clear() {
+            m_msgIds = new ArrayList<String>();
+            m_args = new ArrayList<List<Object>>();
+        }
+        
+        /**
+         * Get the message Id
+         * 
+         * @param index the index of the message Id to return
+         */
+        String getId(int index) {
+            return m_msgIds.get(index);
+        }
+        
+        /**
+         * Get the message arguments as an Object[].
+         * 
+         * @param index the specific message argument List object
+         */
+        Object[] getArgs(int index) {
+            return m_args.get(index).toArray();
+        }
+        
+        /**
+         * Determine whether there are any status messages to display.
+         * 
+         * @return true if there are no status messages, false otherwise
+         */
+        boolean isEmpty() {
+            return m_msgIds.isEmpty();
+        }
+    }
+    private Status m_status = new Status();
     
     // The calculator for doing all the conversions
 	private Uc2oolModel m_model;
@@ -126,6 +196,10 @@ public class Uc2oolController {
 	        Uc2oolController.class.getName();
 	private final static String DEBUG_FILE_NAME = "%t/uc2ool%g.log";
 	
+	// Message bundle
+    private final static String RESOURCE_BUNDLE_NAME =
+            "ds.uc2ool.javafxui.resources.Messages";
+
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         try {
@@ -213,8 +287,22 @@ public class Uc2oolController {
             });
             m_fontSize.setValue(DEFAULT_FONT_SIZE);
         }
+        
+        /*
+         * Clear the status bar.
+         */
+        if (m_statusBar != null) {
+            m_statusBar.setText("");
+        }
     }
 
+    private String getLocalizedMessage(String msgId, Object... args) {
+        ResourceBundle mb = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
+        String msg = mb.getString(msgId);
+        return new StringBuilder(
+                String.format(msg, args)).toString();
+    }
+    
     /**
      * I am not sure I need this kind of validation but if it fails
      * it will throw Uc2oolFatalException which will log and then System.exit().
@@ -244,6 +332,9 @@ public class Uc2oolController {
             if (m_inputCharacter != null) {
             	m_logger.log(Level.FINEST, m_inputCharacter.getText());
             	
+            	// Clear status bar
+            	m_status.clear();
+            	
             	// Get the input type and prime Uc2oolModel
             	InputType type = 
             	    (InputType)
@@ -259,7 +350,18 @@ public class Uc2oolController {
             	m_utf8Encoding.setText(m_model.getUTF8Encoding());
             	m_decimalCodePoint.setText(m_model.getDecimalCodePoint());
             	m_glyph.setFont(new Font(m_fontValue, m_fontSizeValue));
-            	m_glyph.setText(getUnicodeCharacter());    		
+            	m_glyph.clear();
+            	m_glyph.appendText(getUnicodeCharacter());
+            	
+            	// Paint status last in case any operations have posted a
+            	// status update.
+            	if (!m_status.isEmpty()) {
+                	m_statusBar.setText(
+                	    getLocalizedMessage(m_status.getId(0),
+                	                        m_status.getArgs(0)));
+            	} else {
+            	    m_statusBar.setText("");
+            	}
             }
         } catch (Exception cre) {
             handleException(cre);
@@ -267,13 +369,12 @@ public class Uc2oolController {
     }
 
     private String getUnicodeCharacter() {
-        // FIXME This awtFont support is a precursor to full missing glyph
-        // support which is to come.
         java.awt.Font awtFont = 
                 new java.awt.Font(m_fontValue,
                                   java.awt.Font.PLAIN,
                                   new Double(m_fontSizeValue).intValue());
         if (!awtFont.canDisplay(m_model.getCodepoint())) {
+            m_status.add("NO_GLYPH", new Object[] {});
             return new String("");
         }
         return m_model.getUnicodeCharacter();

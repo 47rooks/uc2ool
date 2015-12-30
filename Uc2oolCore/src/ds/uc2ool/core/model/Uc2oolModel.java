@@ -244,7 +244,7 @@ public class Uc2oolModel {
         StringBuffer sb = new StringBuffer();
         int tmpCp = m_codepoint;
         for (int i=numBytes-1; i >= 0; i--) {
-            switch(i){
+            switch(i) {
             case 0:
                 // Create the byte using lowest 6 bits of value
                 utf8[i] = (char)(firstBytePrefix | tmpCp);
