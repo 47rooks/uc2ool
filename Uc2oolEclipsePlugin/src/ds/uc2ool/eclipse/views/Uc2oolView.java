@@ -4,11 +4,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-
 /**
  * This is the Eclipse view, not to be confused with the V in MVC.
  * It instantiates a controller which will create all the elements of the
  * display and connect up a model instance.
+ *
+ * @author  Daniel Semler
+ * @version %I%, %G%
+ * @since   1.0
  */
 public class Uc2oolView extends ViewPart {
 

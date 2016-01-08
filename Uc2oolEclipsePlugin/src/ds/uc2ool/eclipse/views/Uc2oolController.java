@@ -34,6 +34,16 @@ import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
 
+/**
+ * Uc2oolController is the controller/view class for the Eclipse plugin
+ * version of the Uc2ool.
+ * 
+ * FIXME - describe exception handling.
+ * 
+ * @author	Daniel Semler
+ * @version	%I%, %G%
+ * @since	1.0
+ */
 public class Uc2oolController extends Composite {
     // The calculator for doing all the conversions
     private Uc2oolModel m_model;
