@@ -15,6 +15,7 @@ import ds.uc2ool.core.exceptions.Uc2oolFatalException;
 import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
+import ds.uc2ool.core.status.Status;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -115,76 +116,8 @@ public class Uc2oolController {
     
     @FXML // fx:id="m_statusBar"
     private Label m_statusBar;
-    /**
-     * Instances of the Status class provide support for storing one or more
-     * status messages and their corresponding arguments. They are stored in
-     * the order they are added. These messages are assumed to use messages
-     * Ids which are known to the client. The client is expected to handle
-     * looked of the message in an appropriate bundle and to apply the
-     * arguments to it. Status objects merely provide storage. 
-     * 
-     * There is no multi-threading support.
-     * 
-     * @author	Daniel Semler
-     * @version	%I%, %G%
-     * @since	1.0
-     */
-    private class Status {
-        List<String> m_msgIds;
-        List<List<Object>> m_args;
-        
-        Status() {
-            m_msgIds = new ArrayList<String>();
-            m_args = new ArrayList<List<Object>>();
-        };
-        
-        /**
-         * Add a status message and arguments to this Status
-         * 
-         * @param msgId the message Id for this status message
-         * @param args a list of arguments required by the message
-         */
-        void add(String msgId, Object... args) {
-            m_msgIds.add(msgId);
-            m_args.add(Arrays.asList(args));
-        }
-        
-        /**
-         * Clear down the status object
-         */
-        void clear() {
-            m_msgIds = new ArrayList<String>();
-            m_args = new ArrayList<List<Object>>();
-        }
-        
-        /**
-         * Get the message Id
-         * 
-         * @param index the index of the message Id to return
-         */
-        String getId(int index) {
-            return m_msgIds.get(index);
-        }
-        
-        /**
-         * Get the message arguments as an Object[].
-         * 
-         * @param index the specific message argument List object
-         */
-        Object[] getArgs(int index) {
-            return m_args.get(index).toArray();
-        }
-        
-        /**
-         * Determine whether there are any status messages to display.
-         * 
-         * @return true if there are no status messages, false otherwise
-         */
-        boolean isEmpty() {
-            return m_msgIds.isEmpty();
-        }
-    }
-    private Status m_status = new Status();
+
+    private Status m_status;
     
     // The calculator for doing all the conversions
 	private Uc2oolModel m_model;
@@ -206,6 +139,8 @@ public class Uc2oolController {
             m_logger = new DebugLogger(LOGGER_NAME, DEBUG_FILE_NAME);
             
             m_logger.entering(CLASS_NAME, "initialize");
+            
+            m_status = new Status();
             
             verifyLoaderInitialzation();
             
