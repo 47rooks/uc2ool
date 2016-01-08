@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="600.0" stylesheets="@Uc2ool.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ds.uc2ool.javafxui.Uc2oolController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="525.0" prefWidth="600.0" styleClass="background" stylesheets="@Uc2ool.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ds.uc2ool.javafxui.Uc2oolController">
    <children>
-      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="600.0" VBox.vgrow="NEVER">
+      <HBox alignment="CENTER" prefHeight="40.0" prefWidth="600.0" styleClass="background" VBox.vgrow="NEVER">
          <children>
             <Label text="Unicode 2ool">
                <font>
@@ -26,10 +26,13 @@
          <VBox.margin>
             <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
          </VBox.margin>
+         <padding>
+            <Insets bottom="1.0" />
+         </padding>
       </HBox>
       <SplitPane dividerPositions="0.65" orientation="VERTICAL" VBox.vgrow="ALWAYS">
         <items>
-            <SplitPane dividerPositions="0.5">
+            <SplitPane dividerPositions="0.5" styleClass="background">
                <items>
                   <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <top>
@@ -115,7 +118,7 @@
                   </AnchorPane>
                </items>
             </SplitPane>
-            <BorderPane fx:id="m_statusBar" prefHeight="173.0" prefWidth="598.0">
+            <BorderPane prefHeight="173.0" prefWidth="598.0">
                <center>
                   <GridPane alignment="CENTER" BorderPane.alignment="CENTER">
                     <columnConstraints>
@@ -149,11 +152,24 @@
                </padding>
             </BorderPane>
         </items>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <styleClass>
+            <String fx:value="background" />
+            <String fx:value="topbottomborder" />
+         </styleClass>
       </SplitPane>
-      <Label id="status" stylesheets="@Uc2ool.css">
+      <Label id="status" fx:id="m_statusBar" stylesheets="@Uc2ool.css">
          <font>
             <Font size="14.0" />
          </font>
+         <VBox.margin>
+            <Insets left="5.0" />
+         </VBox.margin>
       </Label>
    </children>
 </VBox>

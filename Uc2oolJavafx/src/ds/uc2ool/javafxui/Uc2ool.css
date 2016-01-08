@@ -2,6 +2,33 @@
  * Copyright Daniel Semler 2015
  */
 .text-area *.text {
+    /*
+     * Align the text in the glyph textarea.
+     */
     -fx-text-alignment: center;
-    
+}
+
+.background {
+    /*
+     * Turquoise blue gradient background colour
+     */
+    -fx-background-color : linear-gradient(to right, #33cccc, white);
+}
+
+.topbottomborder {
+    /*
+     * Used to ensure we get the border lines below the app title block and
+     * above the status line. Thus it is used on the SplitPane which contains
+     * all main pane content.
+     */
+    -fx-border-width : 1 0 1 0;
+    -fx-border-color : lightgray;
+}
+
+.split-pane-divider {
+    /*
+     * Ensure that we have very thin dividing lines between panes in the
+     * SplitPanes.
+     */
+    -fx-padding : 0 1 0 0;
 }
