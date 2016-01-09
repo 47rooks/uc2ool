@@ -364,8 +364,6 @@ public class Uc2oolController extends Composite {
     }
 
     private String getUnicodeCharacter() {
-        // FIXME This awtFont support is a precursor to full missing glyph
-        // support which is to come.
         java.awt.Font awtFont = 
                 new java.awt.Font(fontName,
                                   java.awt.Font.PLAIN,
