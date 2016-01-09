@@ -35,7 +35,7 @@ public class Uc2oolView extends ViewPart {
     @Override
 	public void createPartControl(Composite parent) {
 
-	    m_uc2oolController = new Uc2oolController(parent, 0);
+	    m_uc2oolController = new Uc2oolController(parent, 0, this);
 	}
 
     /**

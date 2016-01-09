@@ -1,13 +1,17 @@
 package ds.uc2ool.eclipse.views;
 
-import java.io.IOException;
 import java.util.HashSet;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,6 +30,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import ds.debug.DebugLogger;
@@ -33,6 +39,8 @@ import ds.uc2ool.core.exceptions.Uc2oolFatalException;
 import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
+import ds.uc2ool.core.status.Status;
+import uc2ooleclipseplugin.Activator;
 
 /**
  * Uc2oolController is the controller/view class for the Eclipse plugin
@@ -51,9 +59,9 @@ public class Uc2oolController extends Composite {
     // Debug logger
     private Logger m_logger;
     private final static String LOGGER_NAME = "ds.uc2ool";
-    private final static String CLASS_NAME =
-            Uc2oolController.class.getName();
-    private final static String DEBUG_FILE_NAME = "%t/uc2ool%g.log";
+
+    private static final String RESOURCE_BUNDLE_NAME =
+            "ds.uc2ool.eclipse.resources.Messages";
 
     // GUI fields
     private Text m_inputCharacter;
@@ -71,21 +79,22 @@ public class Uc2oolController extends Composite {
     private final String DEFAULT_FONT_NAME = "Cardo";
     private String fontName = DEFAULT_FONT_NAME;
     private int fontSize = Integer.valueOf(DEFAULT_FONT_SIZE);
+
+    private Status m_status = new Status();
+    
+    private ViewPart m_viewPart;
     
     /**
      * Create the composite.
      * @param parent
      * @param style
      */
-    public Uc2oolController(Composite parent, int style) {
+    public Uc2oolController(Composite parent, int style, ViewPart myVP) {
         super(parent, style);
-
-        try {
-            m_logger = new DebugLogger(LOGGER_NAME, DEBUG_FILE_NAME);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
+        m_viewPart = myVP;
+        
+        m_logger = new DebugLogger(LOGGER_NAME, new PLFHandler());
+        
         // Create the GUI layout and setup all the listeners
         createGUI();
 
@@ -306,6 +315,9 @@ public class Uc2oolController extends Composite {
      */
     private void processNow() {
         try {
+            // Clear status bar
+            m_status.clear();
+            
             if (m_inputCharacter != null) {
                 m_logger.log(Level.FINEST, m_inputCharacter.getText());
                 
@@ -315,7 +327,8 @@ public class Uc2oolController extends Composite {
                 
                 // Now populate output display fields with data from the 
                 // Uc2oolModel
-                m_unicodeName.setText(m_model.getUnicodeCharacterName());
+                String uncName = m_model.getUnicodeCharacterName();
+                m_unicodeName.setText(uncName != null ? uncName : "");
                 m_utf16Encoding.setText(m_model.getUTF16Encoding());
                 m_utf8Encoding.setText(m_model.getUTF8Encoding());
                 m_decimalCodePoint.setText(m_model.getDecimalCodePoint());
@@ -325,12 +338,31 @@ public class Uc2oolController extends Composite {
                                           fontSize,
                                           SWT.NONE)));
                 m_glyph.setText(getUnicodeCharacter());
+                
+                // Set status line appropriately
+                IActionBars bars = m_viewPart.getViewSite().getActionBars();
+                IStatusLineManager manager = bars.getStatusLineManager();
+                if (!m_status.isEmpty()) {
+                    
+                    manager.setMessage(
+                            getLocalizedMessage(m_status.getId(0),
+                                                m_status.getArgs(0)));
+                } else {
+                    manager.setMessage(null);
+                }   
             }
         } catch (Exception cre) {
             handleException(cre);
         }
     }
     
+    private String getLocalizedMessage(String msgId, Object... args) {
+        ResourceBundle mb = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
+        String msg = mb.getString(msgId);
+        return new StringBuilder(
+                String.format(msg, args)).toString();
+    }
+
     private String getUnicodeCharacter() {
         // FIXME This awtFont support is a precursor to full missing glyph
         // support which is to come.
@@ -339,6 +371,7 @@ public class Uc2oolController extends Composite {
                                   java.awt.Font.PLAIN,
                                   fontSize);
         if (!awtFont.canDisplay(m_model.getCodepoint())) {
+            m_status.add("NO_GLYPH", new Object[] {});
             return new String("");
         }
         return m_model.getUnicodeCharacter();
@@ -398,5 +431,39 @@ public class Uc2oolController extends Composite {
     @Override
     protected void checkSubclass() {
         // Disable the check that prevents subclassing of SWT components
+    }
+    
+    /**
+     * Instances of this class log records to the Eclipse Platform Logging
+     * facility.
+     * 
+     * @author	Daniel Semler
+     * @version	%I%, %G%
+     * @since	1.0
+     */
+    private class PLFHandler extends Handler {
+        
+        @Override
+        public void publish(LogRecord record) {
+
+            IStatus s = new org.eclipse.core.runtime.Status(
+                                   org.eclipse.core.runtime.Status.INFO,
+                                   Activator.PLUGIN_ID,
+                                   org.eclipse.core.runtime.Status.OK,
+                                   record.getMessage(),
+                                   record.getThrown());
+            Activator.getDefault().getLog().log(s);
+        }
+
+        @Override
+        public void flush() {
+            // No-op
+        }
+
+        @Override
+        public void close() throws SecurityException {
+            // No-op
+        }
+        
     }
 }
