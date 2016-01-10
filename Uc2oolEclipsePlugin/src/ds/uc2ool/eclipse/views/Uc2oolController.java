@@ -351,7 +351,7 @@ public class Uc2oolController extends Composite {
                     manager.setMessage(null);
                 }   
             }
-        } catch (Exception cre) {
+        } catch (Uc2oolRuntimeException cre) {
             handleException(cre);
         }
     }
@@ -380,30 +380,16 @@ public class Uc2oolController extends Composite {
      * 
      * @param e the Exception to handle
      */
-    private void handleException(Throwable t) {
-        
-        // Return codes that may be processed at the command line.
-        final int RC_OK            =  0;
-        final int RC_UNHANDLED_EXC = -1;
-        final int RC_FATAL_EXC     = -2;
-        
+    private void handleException(Uc2oolRuntimeException t) {
+                
         if (t instanceof Uc2oolFatalException) {
             if (m_logger != null) {
                 m_logger.log(Level.SEVERE, t.getLocalizedMessage(), t);
             }
             showErrorDialog(t);
-            System.exit(RC_FATAL_EXC);
         } else if (t instanceof Uc2oolRuntimeException) {
             
             showErrorDialog(t);
-        } else {
-            // These are considered fatal to the application.
-            // FIXME If this happens in Eclipse we should take out only the
-            //       plugin not the entire workbench. Find out how to do this.
-            //       Perhaps the exception should just be propagated to the
-            //       workbench and let it sort out what to do.
-            t.printStackTrace();
-            System.exit(RC_UNHANDLED_EXC);
         }
     }
     

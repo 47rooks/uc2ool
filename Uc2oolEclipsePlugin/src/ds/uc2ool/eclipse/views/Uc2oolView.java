@@ -53,8 +53,10 @@ public class Uc2oolView extends ViewPart {
      */ 
     @Override
     public void dispose() {
-        m_uc2oolController.dispose();
-        m_uc2oolController = null;
+        if (m_uc2oolController != null) {
+            m_uc2oolController.dispose();
+            m_uc2oolController = null;
+        }
         SWTResourceManager.dispose();
         super.dispose();
     }
