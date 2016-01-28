@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import ds.debug.DebugLogger;
@@ -40,6 +41,7 @@ import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
 import ds.uc2ool.core.status.Status;
+import ds.uc2ool.eclipse.views.Uc2oolStatus.Severity;
 import uc2ooleclipseplugin.Activator;
 
 /**
@@ -60,8 +62,8 @@ public class Uc2oolController extends Composite {
     private Logger m_logger;
     private final static String LOGGER_NAME = "ds.uc2ool";
 
-    private static final String RESOURCE_BUNDLE_NAME =
-            "ds.uc2ool.eclipse.resources.Messages";
+    private static final String INFO_RESOURCE_BUNDLE_NAME =
+            "ds.uc2ool.eclipse.info.InfoMessages";
 
     // GUI fields
     private Text m_inputCharacter;
@@ -357,7 +359,7 @@ public class Uc2oolController extends Composite {
     }
     
     private String getLocalizedMessage(String msgId, Object... args) {
-        ResourceBundle mb = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
+        ResourceBundle mb = ResourceBundle.getBundle(INFO_RESOURCE_BUNDLE_NAME);
         String msg = mb.getString(msgId);
         return new StringBuilder(
                 String.format(msg, args)).toString();
@@ -370,7 +372,7 @@ public class Uc2oolController extends Composite {
                                   fontSize);
         if (!awtFont.canDisplay(m_model.getCodepoint())) {
             m_status.add("NO_GLYPH", new Object[] {});
-            return new String("");
+           // throw new Uc2oolFatalException("INIT_FAILED", "none", "none");
         }
         return m_model.getUnicodeCharacter();
     }
@@ -386,7 +388,14 @@ public class Uc2oolController extends Composite {
             if (m_logger != null) {
                 m_logger.log(Level.SEVERE, t.getLocalizedMessage(), t);
             }
-            showErrorDialog(t);
+            // Create Uc2oolStatus object object
+            IStatus stat = new Uc2oolStatus(Severity.SEVERE.getSeverity(),
+                                            1,
+                                            t.getLocalizedMessage(),
+                                            t);
+            StatusManager.getManager().handle(stat, StatusManager.SHOW);
+            
+            //showErrorDialog(t);
         } else if (t instanceof Uc2oolRuntimeException) {
             
             showErrorDialog(t);
@@ -397,7 +406,7 @@ public class Uc2oolController extends Composite {
         Shell sh = new Shell(Display.getCurrent());
         MessageBox mb = 
             new MessageBox(sh, SWT.ICON_INFORMATION | SWT.OK);
-        mb.setText("Error");
+        mb.setText("BaseError");
         mb.setMessage(e.getLocalizedMessage());
         mb.open();  // Intentionally ignore return
     }

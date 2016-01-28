@@ -3,10 +3,7 @@
  */
 package ds.uc2ool.core.exceptions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import ds.errors.BaseError;
 
 /**
  * Uc2oolRuntimeException is the base class of all RuntimeExceptions
@@ -27,10 +24,7 @@ public class Uc2oolRuntimeException extends RuntimeException {
      */
     private static final long serialVersionUID = 1L;
     
-    private final String m_msgKey;
-    private final List<Object> m_args;
-    private final static String RESOURCE_BUNDLE_NAME =
-            "ds.uc2ool.core.resources.Messages";
+    private final BaseError m_error;
     
     /*
      * Constructor taking message key and arguments to be substituted
@@ -38,16 +32,14 @@ public class Uc2oolRuntimeException extends RuntimeException {
      * @param msgKey the resource bundle message key for the message
      * @param arguments required by the message substitution string
      */
-    public Uc2oolRuntimeException(String msgKey, Object... args) {
-        m_msgKey = msgKey;
-        m_args = new ArrayList<Object>(Arrays.asList(args));
+    public Uc2oolRuntimeException(BaseError baseError) {
+        m_error = baseError;
     }
     
     @Override
     public String getLocalizedMessage() {
-        ResourceBundle mb = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
-        String msg = mb.getString(m_msgKey);
-        return new StringBuilder(
-                String.format(msg, m_args.toArray())).toString();
+        return m_error.getError() + "\n" +
+               m_error.getReason() + "\n" +
+               m_error.getResponse();
     }
 }

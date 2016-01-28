@@ -3,6 +3,7 @@ package ds.uc2ool.core.model;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import ds.uc2ool.core.errors.CoreError;
 import ds.uc2ool.core.exceptions.UncheckedModelException;
 
 /**
@@ -94,7 +95,11 @@ public class Uc2oolModel {
 	         pHex2byte.matcher(i).matches() ||
 	         pHex3byte.matcher(i).matches() ||
 	         pHex4byte.matcher(i).matches())) {
-            throw new UncheckedModelException("INV_UTF8_ENCODING", i);
+            throw new UncheckedModelException(
+                    new CoreError("INV_UTF8_ENCODING",
+                            null,
+                            new Object[] {i},
+                            null));
 	    }
 	            
         // Check for the correct first byte encoding for the number of hex pairs
@@ -154,7 +159,11 @@ public class Uc2oolModel {
             return cp;
         }
   
-	    throw new UncheckedModelException("INV_UTF8_ENCODING", i);
+	    throw new UncheckedModelException(
+	            new CoreError("INV_UTF8_ENCODING",
+	                    null,
+	                    new Object[] {i},
+	                    null));
 	}
 	
 	// Validate the input codepoint value for a decimal input
@@ -162,10 +171,19 @@ public class Uc2oolModel {
 	    try {
             int cp = Integer.valueOf(i);
             if (cp < 0 || cp > MAX_CODEPOINT) {
-                throw new UncheckedModelException("INV_DEC_CP", i);
+                throw new UncheckedModelException(
+                        new CoreError("INV_DEC_CP",
+                                null,
+                                new Object[] {i},
+                                null));
+                
             }
         } catch (NumberFormatException e) {
-            throw new UncheckedModelException("INV_DEC_CP", i);
+            throw new UncheckedModelException(
+                    new CoreError("INV_DEC_CP",
+                            null,
+                            new Object[] {i},
+                            null));
         }
 	}
 
@@ -183,10 +201,18 @@ public class Uc2oolModel {
         try {
             int cp = parseHexInput(i);
             if (cp < 0 || cp > MAX_CODEPOINT) {
-                throw new UncheckedModelException("INV_HEX_CP", i);
+                throw new UncheckedModelException(
+                        new CoreError("INV_HEX_CP",
+                                null,
+                                new Object[]{i},
+                                null));
             }
         } catch (NumberFormatException e) {
-            throw new UncheckedModelException("INV_HEX_CP", i);
+            throw new UncheckedModelException(
+                    new CoreError("INV_HEX_CP",
+                            null,
+                            new Object[] {i},
+                            null));
         }
 	}
 	

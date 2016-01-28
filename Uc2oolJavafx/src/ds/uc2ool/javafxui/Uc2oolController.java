@@ -16,6 +16,7 @@ import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
 import ds.uc2ool.core.status.Status;
+import ds.uc2ool.javafxui.errors.JavafxError;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -130,8 +131,8 @@ public class Uc2oolController {
 	private final static String DEBUG_FILE_NAME = "%t/uc2ool%g.log";
 	
 	// Message bundle
-    private final static String RESOURCE_BUNDLE_NAME =
-            "ds.uc2ool.javafxui.resources.Messages";
+    private final static String INFO_RESOURCE_BUNDLE_NAME =
+            "ds.uc2ool.javafxui.info.InfoMessages";
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
@@ -232,7 +233,8 @@ public class Uc2oolController {
     }
 
     private String getLocalizedMessage(String msgId, Object... args) {
-        ResourceBundle mb = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME);
+        ResourceBundle mb = ResourceBundle.getBundle(
+                                INFO_RESOURCE_BUNDLE_NAME);
         String msg = mb.getString(msgId);
         return new StringBuilder(
                 String.format(msg, args)).toString();
@@ -244,14 +246,20 @@ public class Uc2oolController {
      */
     private void verifyLoaderInitialzation() {
         if (m_process == null) {
-            throw new Uc2oolFatalException("INIT_FAILED",
-                                           "fx:id=\"m_process\"",
-                                           "uc2ool.fxml");
+            throw new Uc2oolFatalException(
+                    new JavafxError("INIT_FAILED",
+                                    new Object[] { "fx:id=\"m_process\"",
+                                                   "uc2ool.fxml"},
+                                    null,
+                                    null));
         }
         if (m_inputCharacter == null) {
-            throw new Uc2oolFatalException("INIT_FAILED", 
-                                           "fx:id=\"m_inputCharacter\"",
-                                           "uc2ool.fxml");
+            throw new Uc2oolFatalException(
+                    new JavafxError("INIT_FAILED",
+                                    new Object[] { "fx:id=\"m_inputCharacter\"",
+                                                   "uc2ool.fxml" },
+                                    null,
+                                    null));
         }
     }
 

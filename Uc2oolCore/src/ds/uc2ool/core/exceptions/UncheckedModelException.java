@@ -3,6 +3,8 @@
  */
 package ds.uc2ool.core.exceptions;
 
+import ds.errors.BaseError;
+
 /**
  * Objects of this class represent an exception in the (model)
  * and will contain translatable parameterised messages.
@@ -21,10 +23,9 @@ public class UncheckedModelException extends Uc2oolRuntimeException {
     /*
      * Constructor taking message key and arguments to be substituted
      * 
-     * @param msgKey the resource bundle message key for the message
-     * @param args arguments required by the message substitution string
+     * @param error the BaseError object. See ds.errors.BaseError
      */
-    public UncheckedModelException(String msgKey, Object... args) {
-        super(msgKey, args);
+    public UncheckedModelException(BaseError error) {
+        super(error);
     }
 }
