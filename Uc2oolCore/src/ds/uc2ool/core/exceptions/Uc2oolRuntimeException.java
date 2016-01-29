@@ -3,6 +3,9 @@
  */
 package ds.uc2ool.core.exceptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ds.errors.BaseError;
 
 /**
@@ -38,8 +41,14 @@ public class Uc2oolRuntimeException extends RuntimeException {
     
     @Override
     public String getLocalizedMessage() {
-        return m_error.getError() + "\n" +
-               m_error.getReason() + "\n" +
-               m_error.getResponse();
+        List<String> l = new ArrayList<String>();
+        l.add(m_error.getError());
+        l.add(m_error.getReason());
+        l.add(m_error.getResponse());
+        StringBuilder sb = new StringBuilder();
+        l.forEach((elt)->{
+            if (elt != null && elt.length() > 0) sb.append(elt).append("\n");
+        });
+        return sb.substring(0, sb.lastIndexOf("\n"));
     }
 }
