@@ -15,7 +15,7 @@ import ds.errors.BaseError;
 public class EclipseError extends BaseError {
 
     private final static String RESOURCE_BUNDLE_NAME =
-            "ds.uc2ool.core.errors.JavafxMessages";
+            "ds.uc2ool.eclipse.errors.EclipseMessages";
 
     protected EclipseError(String key,
                            Object[] errorArgs,

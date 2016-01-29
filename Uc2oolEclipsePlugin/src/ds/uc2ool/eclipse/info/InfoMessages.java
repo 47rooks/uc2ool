@@ -13,7 +13,7 @@ import java.util.ListResourceBundle;
 public class InfoMessages extends ListResourceBundle {
 
     static final Object[][] m_contents = {
-            // Status messages
+            // Info messages
             { "NO_GLYPH", "This font has no glyph for this codepoint."}
     };
     

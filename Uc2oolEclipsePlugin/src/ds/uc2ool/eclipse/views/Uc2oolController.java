@@ -38,10 +38,10 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import ds.debug.DebugLogger;
 import ds.uc2ool.core.exceptions.Uc2oolFatalException;
 import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
+import ds.uc2ool.core.info.Info;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
-import ds.uc2ool.core.status.Status;
-import ds.uc2ool.eclipse.views.Uc2oolStatus.Severity;
+import ds.uc2ool.eclipse.statusmanagement.Uc2oolStatus;
 import uc2ooleclipseplugin.Activator;
 
 /**
@@ -82,7 +82,7 @@ public class Uc2oolController extends Composite {
     private String fontName = DEFAULT_FONT_NAME;
     private int fontSize = Integer.valueOf(DEFAULT_FONT_SIZE);
 
-    private Status m_status = new Status();
+    private Info m_Info = new Info();
     
     private ViewPart m_viewPart;
     
@@ -317,8 +317,8 @@ public class Uc2oolController extends Composite {
      */
     private void processNow() {
         try {
-            // Clear status bar
-            m_status.clear();
+            // Clear Info bar
+            m_Info.clear();
             
             if (m_inputCharacter != null) {
                 m_logger.log(Level.FINEST, m_inputCharacter.getText());
@@ -341,14 +341,14 @@ public class Uc2oolController extends Composite {
                                           SWT.NONE)));
                 m_glyph.setText(getUnicodeCharacter());
                 
-                // Set status line appropriately
+                // Set Info line appropriately
                 IActionBars bars = m_viewPart.getViewSite().getActionBars();
                 IStatusLineManager manager = bars.getStatusLineManager();
-                if (!m_status.isEmpty()) {
+                if (!m_Info.isEmpty()) {
                     
                     manager.setMessage(
-                            getLocalizedMessage(m_status.getId(0),
-                                                m_status.getArgs(0)));
+                            getInfoMessage(m_Info.getId(0),
+                                           m_Info.getArgs(0)));
                 } else {
                     manager.setMessage(null);
                 }   
@@ -358,7 +358,7 @@ public class Uc2oolController extends Composite {
         }
     }
     
-    private String getLocalizedMessage(String msgId, Object... args) {
+    private String getInfoMessage(String msgId, Object... args) {
         ResourceBundle mb = ResourceBundle.getBundle(INFO_RESOURCE_BUNDLE_NAME);
         String msg = mb.getString(msgId);
         return new StringBuilder(
@@ -371,7 +371,7 @@ public class Uc2oolController extends Composite {
                                   java.awt.Font.PLAIN,
                                   fontSize);
         if (!awtFont.canDisplay(m_model.getCodepoint())) {
-            m_status.add("NO_GLYPH", new Object[] {});
+            m_Info.add("NO_GLYPH", new Object[] {});
            // throw new Uc2oolFatalException("INIT_FAILED", "none", "none");
         }
         return m_model.getUnicodeCharacter();
@@ -382,23 +382,20 @@ public class Uc2oolController extends Composite {
      * 
      * @param e the Exception to handle
      */
-    private void handleException(Uc2oolRuntimeException t) {
+    private void handleException(Uc2oolRuntimeException ure) {
                 
-        if (t instanceof Uc2oolFatalException) {
+        if (ure instanceof Uc2oolFatalException) {
             if (m_logger != null) {
-                m_logger.log(Level.SEVERE, t.getLocalizedMessage(), t);
+                m_logger.log(Level.SEVERE, ure.getLocalizedMessage(), ure);
             }
             // Create Uc2oolStatus object object
-            IStatus stat = new Uc2oolStatus(Severity.SEVERE.getSeverity(),
-                                            1,
-                                            t.getLocalizedMessage(),
-                                            t);
+            IStatus stat = new Uc2oolStatus(ure);
             StatusManager.getManager().handle(stat, StatusManager.SHOW);
             
             //showErrorDialog(t);
-        } else if (t instanceof Uc2oolRuntimeException) {
+        } else if (ure instanceof Uc2oolRuntimeException) {
             
-            showErrorDialog(t);
+            showErrorDialog(ure);
         }
     }
     

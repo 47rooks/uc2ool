@@ -2,8 +2,6 @@ package ds.uc2ool.javafxui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -13,9 +11,9 @@ import java.util.logging.Logger;
 import ds.debug.DebugLogger;
 import ds.uc2ool.core.exceptions.Uc2oolFatalException;
 import ds.uc2ool.core.exceptions.Uc2oolRuntimeException;
+import ds.uc2ool.core.info.Info;
 import ds.uc2ool.core.model.Uc2oolModel;
 import ds.uc2ool.core.model.Uc2oolModel.InputType;
-import ds.uc2ool.core.status.Status;
 import ds.uc2ool.javafxui.errors.JavafxError;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -118,7 +116,7 @@ public class Uc2oolController {
     @FXML // fx:id="m_statusBar"
     private Label m_statusBar;
 
-    private Status m_status;
+    private Info m_status;
     
     // The calculator for doing all the conversions
 	private Uc2oolModel m_model;
@@ -141,7 +139,7 @@ public class Uc2oolController {
             
             m_logger.entering(CLASS_NAME, "initialize");
             
-            m_status = new Status();
+            m_status = new Info();
             
             verifyLoaderInitialzation();
             
@@ -232,7 +230,7 @@ public class Uc2oolController {
         }
     }
 
-    private String getLocalizedMessage(String msgId, Object... args) {
+    private String getInfoMessage(String msgId, Object... args) {
         ResourceBundle mb = ResourceBundle.getBundle(
                                 INFO_RESOURCE_BUNDLE_NAME);
         String msg = mb.getString(msgId);
@@ -300,7 +298,7 @@ public class Uc2oolController {
             	// status update.
             	if (!m_status.isEmpty()) {
                 	m_statusBar.setText(
-                	    getLocalizedMessage(m_status.getId(0),
+                	    getInfoMessage(m_status.getId(0),
                 	                        m_status.getArgs(0)));
             	} else {
             	    m_statusBar.setText("");

@@ -17,7 +17,7 @@ import ds.errors.BaseError;
 public class JavafxError extends BaseError {
 
     private final static String RESOURCE_BUNDLE_NAME =
-            "ds.uc2ool.core.resources.JavafxMessages";
+            "ds.uc2ool.javafxui.errors.JavafxMessages";
 
     public JavafxError(String key,
                           Object[] errorArgs,

@@ -1,5 +1,7 @@
 package ds.errors;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -103,5 +105,22 @@ public abstract class BaseError {
                 ((ErrorTexts)getMessageBundle().getObject(m_key)).getResponse();
         return msg == null ? "" :
             msg.length() == 0 ? "" :  String.format(msg, m_responseArgs);
+    }
+    
+    /**
+     * Get a translated message containing all the parts and their arguments.
+     * 
+     * @return a fully translated error, reason and response message
+     */
+    public String getLocalizedMessage() {
+        List<String> l = new ArrayList<String>();
+        l.add(getError());
+        l.add(getReason());
+        l.add(getResponse());
+        StringBuilder sb = new StringBuilder();
+        l.forEach((elt)->{
+            if (elt != null && elt.length() > 0) sb.append(elt).append("\n");
+        });
+        return sb.substring(0, sb.lastIndexOf("\n"));
     }
 }

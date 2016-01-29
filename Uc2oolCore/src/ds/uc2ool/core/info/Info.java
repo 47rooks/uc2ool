@@ -1,19 +1,19 @@
 /**
  * Copyright Daniel Semler 2015
  */
-package ds.uc2ool.core.status;
+package ds.uc2ool.core.info;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Instances of the Status class provide support for storing one or more
+ * Instances of the Info class provide support for storing one or more
  * status messages and their corresponding arguments. They are stored in
  * the order they are added. These messages are assumed to use messages
  * Ids which are known to the client. The client is expected to handle
  * looked of the message in an appropriate bundle and to apply the
- * arguments to it. Status objects merely provide storage. 
+ * arguments to it. Info objects merely provide storage. 
  * 
  * There is no multi-threading support.
  * 
@@ -21,17 +21,17 @@ import java.util.List;
  * @version %I%, %G%
  * @since   1.0
  */
-public class Status {
+public class Info {
     List<String> m_msgIds;
     List<List<Object>> m_args;
     
-    public Status() {
+    public Info() {
         m_msgIds = new ArrayList<String>();
         m_args = new ArrayList<List<Object>>();
     };
     
     /**
-     * Add a status message and arguments to this Status
+     * Add a status message and arguments to this Info
      * 
      * @param msgId the message Id for this status message
      * @param args a list of arguments required by the message
