@@ -17,21 +17,68 @@ import uc2ooleclipseplugin.Activator;
  */
 public class Uc2oolStatus extends MultiStatus {
     
-    public Uc2oolStatus(Uc2oolRuntimeException t) {
+    private Uc2oolStatus(Uc2oolRuntimeException ure) {
         super(Activator.PLUGIN_ID,
               0,
-              t.getError().getError(),
+              ure.getError().getError(),
               null);
-        add(new Status(IStatus.ERROR,
-                       Activator.PLUGIN_ID,
-                       0,
-                       t.getError().getReason(),
-                       null));        
         add(new Status(IStatus.ERROR,
                 Activator.PLUGIN_ID,
                 0,
-                t.getError().getResponse(),
+                ure.getError().getReason(),
                 null));        
     }
 
+    /**
+     * Add the response status to the MultiStatus
+     * 
+     * @param ure the exception to get the response status from.
+     */
+    private void addResponse(Uc2oolRuntimeException ure) {
+        add(new Status(IStatus.ERROR,
+                Activator.PLUGIN_ID,
+                0,
+                ure.getError().getResponse(),
+                null));        
+    }
+    
+    /**
+     * Add the response status with the exception to the MultiStatus
+     * 
+     * @param ure the exception to add
+     */
+    private void addResponseWithException(Uc2oolRuntimeException ure) {
+        add(new Status(IStatus.ERROR,
+                Activator.PLUGIN_ID,
+                0,
+                ure.getError().getResponse(),
+                ure));        
+    }
+
+    /**
+     * Get a Uc2ool object for display to users. It will not contain any
+     * stack trace information, but will contain all three parts of the 
+     * error text.
+     * 
+     * @param ure the expection for which to obtain the status
+     * @return the status object
+     */
+    public static Uc2oolStatus getStatus(Uc2oolRuntimeException ure) {
+        Uc2oolStatus us = new Uc2oolStatus(ure);
+        us.addResponse(ure);
+        return us;
+    }
+    
+    /**
+     * Get a status suitable for logging in the platform logging facility.
+     * This will contain all message data plus the exception information.
+     * 
+     * @param ure the expection for which to obtain the status
+     * @return the status object
+     */
+    public static Uc2oolStatus getStatusWithException(Uc2oolRuntimeException ure) {
+        Uc2oolStatus us = new Uc2oolStatus(ure);
+        us.addResponseWithException(ure);
+        return us;
+    }
 }

@@ -370,7 +370,6 @@ public class Uc2oolController extends Composite {
                                   fontSize);
         if (!awtFont.canDisplay(m_model.getCodepoint())) {
             m_Info.add("NO_GLYPH", new Object[] {});
-           // throw new Uc2oolFatalException("INIT_FAILED", "none", "none");
         }
         return m_model.getUnicodeCharacter();
     }
@@ -387,19 +386,19 @@ public class Uc2oolController extends Composite {
                 m_logger.log(Level.SEVERE, ure.getLocalizedMessage(), ure);
             }
             // Create Uc2oolStatus object object
-            IStatus stat = new Uc2oolStatus(ure);
+            IStatus stat = Uc2oolStatus.getStatusWithException(ure);
             StatusManager.getManager().handle(stat,
                                               StatusManager.SHOW |
                                               StatusManager.LOG);
-            
         } else if (ure instanceof Uc2oolRuntimeException) {
             
             // Create Uc2oolStatus object object
-            IStatus stat = new Uc2oolStatus(ure);
+            IStatus stat = 
+                    Uc2oolStatus.getStatus(ure);
             StatusManager.getManager().handle(stat, StatusManager.SHOW);
         }
     }
-        
+
     /**
      * Connect to the calculator model so that we can process Unicode character
      * operations.
