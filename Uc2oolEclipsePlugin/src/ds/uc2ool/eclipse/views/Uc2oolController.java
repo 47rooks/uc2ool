@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
@@ -390,27 +388,18 @@ public class Uc2oolController extends Composite {
             }
             // Create Uc2oolStatus object object
             IStatus stat = new Uc2oolStatus(ure);
-            StatusManager.getManager().handle(stat, StatusManager.SHOW);
+            StatusManager.getManager().handle(stat,
+                                              StatusManager.SHOW |
+                                              StatusManager.LOG);
             
-            //showErrorDialog(t);
         } else if (ure instanceof Uc2oolRuntimeException) {
             
             // Create Uc2oolStatus object object
             IStatus stat = new Uc2oolStatus(ure);
             StatusManager.getManager().handle(stat, StatusManager.SHOW);
-            // showErrorDialog(ure);
         }
     }
-    
-    private void showErrorDialog(Throwable e) {
-        Shell sh = new Shell(Display.getCurrent());
-        MessageBox mb = 
-            new MessageBox(sh, SWT.ICON_INFORMATION | SWT.OK);
-        mb.setText("BaseError");
-        mb.setMessage(e.getLocalizedMessage());
-        mb.open();  // Intentionally ignore return
-    }
-    
+        
     /**
      * Connect to the calculator model so that we can process Unicode character
      * operations.
