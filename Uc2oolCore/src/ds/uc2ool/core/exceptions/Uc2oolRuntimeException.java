@@ -40,4 +40,13 @@ public class Uc2oolRuntimeException extends RuntimeException {
     public String getLocalizedMessage() {
         return m_error.getLocalizedMessage();
     }
+    
+    /**
+     * Get the error object from the exception.
+     * 
+     * @return the error object
+     */
+    public BaseError getError() {
+        return m_error;
+    }
 }

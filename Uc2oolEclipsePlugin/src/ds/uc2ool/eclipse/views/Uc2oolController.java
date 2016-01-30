@@ -395,7 +395,10 @@ public class Uc2oolController extends Composite {
             //showErrorDialog(t);
         } else if (ure instanceof Uc2oolRuntimeException) {
             
-            showErrorDialog(ure);
+            // Create Uc2oolStatus object object
+            IStatus stat = new Uc2oolStatus(ure);
+            StatusManager.getManager().handle(stat, StatusManager.SHOW);
+            // showErrorDialog(ure);
         }
     }
     

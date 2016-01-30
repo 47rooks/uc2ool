@@ -7,6 +7,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.core.StringContains.containsString;
+
 import ds.debug.DebugLogger;
 import ds.uc2ool.core.exceptions.UncheckedModelException;
 import ds.uc2ool.core.model.Uc2oolModel;
@@ -138,9 +142,9 @@ public class Uc2oolUnitTest {
                                    InputType.HEXCODEPOINT, "F7 BF BF BF");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid hexadecimal code point 0x1fffff."));
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid hexadecimal code point"),
+                             containsString("0x1fffff")));
         }
     }
     
@@ -420,9 +424,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence 82."));           
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("82")));
         }
     }
 
@@ -434,9 +438,9 @@ public class Uc2oolUnitTest {
             testUTF8Input("EF BF", 3071);
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence EF BF."));           
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("EF BF")));
         }
     }
 
@@ -447,9 +451,9 @@ public class Uc2oolUnitTest {
             testUTF8Input("DF 70", 3071);
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence DF 70."));           
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("DF 70")));
         }
     }
 
@@ -462,9 +466,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence FF BF BF."));
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("FF BF BF")));
         }
     }
 
@@ -476,9 +480,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence E0 90 BF."));
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("E0 90 BF")));
         }
     }
 
@@ -491,9 +495,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence E0 BF 70."));
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("E0 BF 70")));
         }
     }
 
@@ -506,9 +510,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence F4 8F C3 BF."));           
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("F4 8F C3 BF")));
         }
     }
     
@@ -520,9 +524,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence F4 9F BF BF."));           
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("F4 9F BF BF")));
         }
     }
 
@@ -534,9 +538,9 @@ public class Uc2oolUnitTest {
             fail("Expected exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid UTF-8 input sequence F4 9F BF BF 90."));           
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid UTF-8 input sequence"),
+                             containsString("F4 9F BF BF 90")));
         }
     }
 
@@ -563,9 +567,9 @@ public class Uc2oolUnitTest {
             fail("Excepted exception not thrown");
         } catch (UncheckedModelException uce) {
             // Expected
-            assertTrue("Got : " + uce.getLocalizedMessage(),
-                       uce.getLocalizedMessage().equals(
-                           "Invalid hexadecimal code point -12."));
+            assertThat(uce.getLocalizedMessage(),
+                       allOf(containsString("Invalid hexadecimal code point"),
+                             containsString("-12")));
         }
     }
     
