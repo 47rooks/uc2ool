@@ -60,7 +60,7 @@ public class Uc2oolStatus extends MultiStatus {
      * stack trace information, but will contain all three parts of the 
      * error text.
      * 
-     * @param ure the expection for which to obtain the status
+     * @param ure the expectation for which to obtain the status
      * @return the status object
      */
     public static Uc2oolStatus getStatus(Uc2oolRuntimeException ure) {
@@ -73,7 +73,7 @@ public class Uc2oolStatus extends MultiStatus {
      * Get a status suitable for logging in the platform logging facility.
      * This will contain all message data plus the exception information.
      * 
-     * @param ure the expection for which to obtain the status
+     * @param ure the expectation for which to obtain the status
      * @return the status object
      */
     public static Uc2oolStatus getStatusWithException(Uc2oolRuntimeException ure) {
