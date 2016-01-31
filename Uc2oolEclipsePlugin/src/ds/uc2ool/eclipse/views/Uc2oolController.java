@@ -11,6 +11,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -84,6 +85,8 @@ public class Uc2oolController extends Composite {
     
     private ViewPart m_viewPart;
     
+    private static final String MODEL_DEBUG_PROP = "ds.debug.logging.level";
+    
     /**
      * Create the composite.
      * @param parent
@@ -93,6 +96,9 @@ public class Uc2oolController extends Composite {
         super(parent, style);
         m_viewPart = myVP;
         
+        // Check for debug flags
+        checkDebug();
+        
         m_logger = new DebugLogger(LOGGER_NAME, new PLFHandler());
         
         // Create the GUI layout and setup all the listeners
@@ -100,6 +106,17 @@ public class Uc2oolController extends Composite {
 
         // Create a model object to drive the GUI
         connectToCalculator();
+    }
+
+    /**
+     * Check for the debug flags in the and setup the Core library debug
+     * property if required.
+     */
+    private void checkDebug() {
+        if (Activator.getDefault().isDebugging()) {
+            System.out.println("Setting debug");
+            System.setProperty(MODEL_DEBUG_PROP, "FINEST");
+        }
     }
 
     /**
@@ -343,7 +360,7 @@ public class Uc2oolController extends Composite {
                 IActionBars bars = m_viewPart.getViewSite().getActionBars();
                 IStatusLineManager manager = bars.getStatusLineManager();
                 if (!m_Info.isEmpty()) {
-                    
+
                     manager.setMessage(
                             getInfoMessage(m_Info.getId(0),
                                            m_Info.getArgs(0)));
