@@ -6,14 +6,14 @@
          point="org.eclipse.ui.views">
       <category
             name="Unicode Tools"
-            id="ds.uc2ool.eclipse.views">
+            id="com.fortysevenrooks.uc2ool.eclipse.views">
       </category>
       <view
             name="Uc2ool"
             icon="icons/sample.gif"
-            category="ds.uc2ool.eclipse.views"
-            class="ds.uc2ool.eclipse.views.Uc2oolView"
-            id="ds.uc2ool.eclipse.views.Uc2oolView">
+            category="com.fortysevenrooks.uc2ool.eclipse.views"
+            class="com.fortysevenrooks.uc2ool.eclipse.views.Uc2oolView"
+            id="com.fortysevenrooks.uc2ool.eclipse.views.Uc2oolView">
       </view>
    </extension>
    <extension
@@ -24,7 +24,7 @@
                ratio="0.5"
                relative="org.eclipse.ui.views.ProblemView"
                relationship="right"
-               id="ds.uc2ool.eclipse.views.Uc2oolView">
+               id="com.fortysevenrooks.uc2ool.eclipse.views.Uc2oolView">
          </view>
       </perspectiveExtension>
    </extension>
