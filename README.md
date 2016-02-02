@@ -12,4 +12,4 @@ There are four subprojects in this repository:
   
   Note that Uc2oolJavafx, Uc2oolEclipse and Uc2oolAndroid require the uc2ool.jar from Uc2oolCore.
   
-  Uc2oolAndroid are not yet started.
+  Uc2oolAndroid is not yet started.
