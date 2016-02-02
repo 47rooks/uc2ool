@@ -32,3 +32,8 @@
      */
     -fx-padding : 0 1 0 0;
 }
+
+.button {
+    -fx-background-color : #00cccc;
+    -fx-border-color : lightgray;
+}
