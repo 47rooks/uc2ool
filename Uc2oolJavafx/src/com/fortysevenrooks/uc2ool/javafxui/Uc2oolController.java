@@ -199,7 +199,11 @@ public class Uc2oolController {
                         }
             });
 
-            m_font.setValue(DEFAULT_FONT_NAME);
+            if (fonts.contains(DEFAULT_FONT_NAME)) {
+                m_font.setValue(DEFAULT_FONT_NAME);
+            } else {
+                m_font.setValue(fonts.get(0));
+            }
             
         }
         
