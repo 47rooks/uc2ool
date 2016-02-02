@@ -24,7 +24,7 @@ public class EclipseMessages extends ListResourceBundle {
     static final Object[][] m_contents = {
 
             // Fatal exception message for IStatus
-            { "UC2-0001", new ErrorTexts(
+            { "FATAL", new ErrorTexts(
                     "Got a fatal exception. Details below",
                     null,
                     null)
