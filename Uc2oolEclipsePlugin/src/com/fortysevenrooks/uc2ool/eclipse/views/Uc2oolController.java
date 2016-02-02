@@ -114,7 +114,6 @@ public class Uc2oolController extends Composite {
      */
     private void checkDebug() {
         if (Activator.getDefault().isDebugging()) {
-            System.out.println("Setting debug");
             System.setProperty(DEBUG_PROP, "FINEST");
         }
     }
@@ -281,12 +280,17 @@ public class Uc2oolController extends Composite {
             }
             int i=0;
             SortedSet<String> ss = new TreeSet<String>(fset);
+            boolean initialFontSelected = false;
             for (String fn : ss) {
                 fontCombo.add(fn);
                 if (fn.equals("Cardo")) {
                     fontCombo.select(i);
+                    initialFontSelected = true;
                 }
                 i++;
+            }
+            if (!initialFontSelected) {
+                fontCombo.select(0);
             }
             fontCombo.addSelectionListener(
                 new SelectionAdapter() {
