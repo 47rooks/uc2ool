@@ -1,7 +1,12 @@
 package com.fortysevenrooks.uc2ool.javafxui;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 import java.io.IOException;
 import java.net.URL;
+import java.text.AttributedCharacterIterator;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -15,6 +20,8 @@ import com.fortysevenrooks.uc2ool.core.info.Info;
 import com.fortysevenrooks.uc2ool.core.model.Uc2oolModel;
 import com.fortysevenrooks.uc2ool.core.model.Uc2oolModel.InputType;
 import com.fortysevenrooks.uc2ool.javafxui.errors.JavafxError;
+import com.fortysevenrooks.utils.PlatformUtils;
+import com.sun.javafx.PlatformUtil;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -33,6 +40,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import static com.fortysevenrooks.utils.FontUtils.hasGlyph;
 
 /**
  * Uc2oolController is the primary controller for the Uc2ool application. It
@@ -195,8 +204,7 @@ public class Uc2oolController {
                         @Override
                         public void changed(ObservableValue<? extends String> o, String ov, String nv) {
                             m_fontValue = nv;
-                            m_glyph.setFont(new Font(m_fontValue, m_fontSizeValue));
-                        }
+                            processFired(null);                        }
             });
 
             if (fonts.contains(DEFAULT_FONT_NAME)) {
@@ -275,7 +283,7 @@ public class Uc2oolController {
     @FXML
     void processFired(ActionEvent event) {
     	try {
-            if (m_inputCharacter != null) {
+            if (m_inputCharacter != null && m_model != null) {
             	m_logger.log(Level.FINEST, m_inputCharacter.getText());
             	
             	// Clear status bar
@@ -315,17 +323,13 @@ public class Uc2oolController {
     }
 
     private String getUnicodeCharacter() {
-        java.awt.Font awtFont = 
-                new java.awt.Font(m_fontValue,
-                                  java.awt.Font.PLAIN,
-                                  new Double(m_fontSizeValue).intValue());
-        if (!awtFont.canDisplay(m_model.getCodepoint())) {
+        if (!hasGlyph(m_fontValue, m_model.getCodepoint())) {
             m_status.add("NO_GLYPH", new Object[] {});
             return new String("");
         }
         return m_model.getUnicodeCharacter();
     }
-    
+        
     /* Handle exception popping up an error dialog to the user and logging
      * the error to the diagnostic log if required.
      * 
