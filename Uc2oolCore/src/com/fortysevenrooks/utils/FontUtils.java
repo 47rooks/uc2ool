@@ -14,6 +14,18 @@ import java.awt.font.GlyphVector;
  * @since	1.0
  */
 public class FontUtils {
+    
+    /**
+     * Check whether a particular font has a glyph for the specified codepoint.
+     * This has special handling for Mac OSX where <code>canDisplay()</code> is
+     * unreliable because it appears to include the fallback font in the check.
+     * Strictly one could use the same method as used for OSX on all ports but
+     * it is known to be expensive, so a port check is done.
+     * 
+     * @param fontName the name of the font to check
+     * @param cp the codepoint to check for
+     * @return true if the font has a glyph for the codepoint, false otherwise.
+     */
     public static boolean hasGlyph(String fontName, int cp) {
         Font awtFont = 
                 new java.awt.Font(fontName,
